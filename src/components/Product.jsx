@@ -5,6 +5,11 @@ import styled from "styled-components";
 const Image = styled.img`
   height: 60vh;
   object-fit: cover;
+
+  @media only screen and (max-width: 480px) {
+    height: 30vh;
+    width: 30vw;
+  }
 `;
 const Title = styled.h1`
   font-family: "Bebas Neue", sans-serif;
@@ -13,6 +18,10 @@ const Title = styled.h1`
   letter-spacing: 0.05em;
   margin: 0.5em 0;
   width: 90%;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 0.8em;
+  }
 `;
 const Container = styled.div`
   display: flex;
@@ -33,10 +42,19 @@ const Container = styled.div`
   &:hover ${Title} {
     color: rgb(146, 146, 146);
   }
+
+  @media only screen and (max-width: 480px) {
+    height: 30vh;
+    width: 30vw;
+  }
 `;
 const PriceContainer = styled.div`
   display: flex;
   justify-content: space-between;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 0.6em;
+  }
 `;
 const PriceRegular = styled.span`
   color: rgb(165, 164, 164);
@@ -49,6 +67,10 @@ const PriceDiscount = styled.span`
   border: 1px solid rgb(0, 163, 0);
   border-radius: 5px;
   padding: 0.2em 0.5em;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 0.9em;
+  }
 `;
 
 const Product = ({ product }) => {

@@ -19,12 +19,25 @@ const Button = styled.button`
     transform: scale(1.05);
     transition: all 0.3s ease;
   }
+
+  @media only screen and (max-width: 480px) {
+    opacity: 1;
+  }
+
+  @media only screen and (max-width: 390px) {
+    font-size: 1em;
+  }
 `;
 
 const Image = styled.img`
   height: 60vh;
   object-fit: cover;
   filter: brightness(70%);
+
+  @media only screen and (max-width: 480px) {
+    height: 30vh;
+    filter: brightness(40%);
+  }
 `;
 
 const Container = styled.div`
@@ -44,6 +57,10 @@ const Container = styled.div`
   &:hover ${Image} {
     filter: brightness(40%);
     transition: all 0.3s ease;
+  }
+
+  @media only screen and (max-width: 480px) {
+    height: 30vh;
   }
 `;
 
@@ -66,6 +83,14 @@ const Title = styled.h1`
   letter-spacing: 0.05em;
   margin-bottom: 0.5em;
   color: rgb(216, 216, 216);
+
+  @media only screen and (max-width: 480px) {
+    font-size: 3em;
+  }
+
+  @media only screen and (max-width: 390px) {
+    font-size: 2.5em;
+  }
 `;
 
 const CategoryItem = ({ item }) => {
