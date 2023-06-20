@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo} from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -6,8 +6,6 @@ import { useSelector, useDispatch } from "react-redux";
 import StripeCheckout from "react-stripe-checkout";
 import { useNavigate } from "react-router-dom";
 import { clearCart } from "../redux/cartRedux";
-
-const KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div`
   background: rgb(0, 0, 0);
@@ -244,10 +242,6 @@ const Cart = () => {
   let lifadDiscount = 0;
   let hstPercentage = 0.13;
 
-  const handleContinue = () => {
-    back("/");
-  };
-
   const handleClearCart = () => {
     dispatch(clearCart());
   };
@@ -284,7 +278,7 @@ const Cart = () => {
         <Wrapper>
           <Title>Your cart</Title>
           <Top>
-            <TopButton onClick={handleContinue}>Continue shopping</TopButton>
+            <TopButton onClick={() => {back("/")}}>Continue shopping</TopButton>
             <TextWrapper>
               <Text>Shopping Bag ({cart.qty})</Text>
               <Text>Your Wishlist (0)</Text>
