@@ -18,6 +18,10 @@ const Wrapper = styled.div`
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url("https://i.scdn.co/image/ab6761610000e5eb32845b1556f9dbdfe8ee6575")
       center center no-repeat;
+
+  @media only screen and (max-width: 480px) {
+    width: 100%;
+  }
 `;
 const Title = styled.h1`
   font-family: "Bebas Neue", sans-serif;
@@ -45,6 +49,11 @@ const Input = styled.input`
   &::placeholder {
     color: rgb(0, 0, 0);
   }
+
+  @media only screen and (max-width: 480px) {
+    width: 60%;
+    font-size: 0.8em;
+  }
 `;
 const Button = styled.button`
   margin: 1em 0;
@@ -69,6 +78,10 @@ const LinkContainer = styled.div`
   width: 40%;
   display: flex;
   justify-content: space-between;
+
+  @media only screen and (max-width: 480px) {
+    width: 60%;
+  }
 `;
 
 const Link = styled.a`
@@ -80,11 +93,6 @@ const Link = styled.a`
     cursor: pointer;
     text-decoration: underline;
   }
-`;
-
-const Error = styled.span`
-  color: red;
-  font-size: 1.2em;
 `;
 
 const Login = () => {

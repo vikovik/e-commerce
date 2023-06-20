@@ -9,22 +9,43 @@ const Container = styled.div`
   background: rgb(0, 0, 0);
   color: rgb(219, 218, 218);
   padding: 2em;
+  margin-top: 4em;
+
+  @media only screen and (max-width: 480px) {
+    width: 100%;
+  }
 `;
 const Title = styled.h1`
   font-family: "Bebas Neue", sans-serif;
   font-size: 3em;
   letter-spacing: 0.05em;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 2em;
+  }
 `;
 const FilterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   margin: 2em 0;
+
+  @media only screen and (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 const Filter = styled.div`
   margin: 0 1em;
+
+  @media only screen and (max-width: 480px) {
+    margin: 0.5em 0;
+  }
 `;
 const FilterText = styled.span`
   font-size: 1.2em;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 0.8em;
+  }
 `;
 const Select = styled.select`
   padding: 0.5em;

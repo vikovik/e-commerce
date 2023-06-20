@@ -3,18 +3,29 @@ import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { ShoppingCartOutlined } from "@mui/icons-material";
+import { Add, Remove } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
   background: rgb(0, 0, 0);
   padding: 2em;
   color: rgb(219, 218, 218);
+  margin-top: 4em;
+
+  @media only screen and (max-width: 480px) {
+    width: 100%;
+    align-items: center;
+  }
 `;
 const Wrapper = styled.div`
   display: flex;
+
+  @media only screen and (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 const ImageContainer = styled.div`
   flex: 1;
@@ -25,21 +36,42 @@ const Image = styled.img`
   object-fit: cover;
   padding: 1em;
   border: 1px solid rgb(172, 171, 171);
+
+  @media only screen and (max-width: 480px) {
+    width: 70vw;
+    height: 50vh;
+  }
 `;
 const InfoContainer = styled.div`
   flex: 1;
   padding: 0 2em;
+
+  @media only screen and (max-width: 480px) {
+    padding: 0;
+  }
 `;
 const Title = styled.h1`
   font-family: "Bebas Neue", sans-serif;
   letter-spacing: 0.05em;
   font-size: 3em;
+
+  @media only screen and (max-width: 480px) {
+    font-size: 2em;
+    margin-top: 0.5em;
+    width: 90%;
+  }
 `;
 const PriceContainer = styled.div`
   margin: 1em 0;
   display: flex;
   flex-direction: column;
   font-size: 1.5em;
+
+  @media only screen and (max-width: 480px) {
+    flex-direction: row;
+    gap: 1em;
+    font-size: 1em;
+  }
 `;
 const PriceRegular = styled.span`
   border: 1px solid rgb(165, 164, 164);
@@ -63,6 +95,10 @@ const PriceDiscount = styled.span`
 const Description = styled.p`
   margin: 2em 0;
   font-size: 1.2em;
+
+  @media only screen and (max-width: 480px) {
+    width: 70%;
+  }
 `;
 const Button = styled.button`
   display: flex;
@@ -96,14 +132,28 @@ const FilterSizeOption = styled.option`
   background: rgb(66, 66, 66);
   color: rgb(219, 218, 218);
 `;
+const AmountContainer = styled.div`
+  margin: 2em 0;
+  display: flex;
+  align-items: center;
+`;
+const Amount = styled.span`
+  color: rgb(153, 152, 152);
+  font-size: 1.2em;
+  margin: 0 0.5em;
+  padding: 0.5em 1em;
+  border: 1px solid rgb(153, 152, 152);
+  border-radius: 5px;
+`;
 
 const SingleProduct = () => {
   const location = useLocation();
   const productId = location.pathname.split("/")[2];
   const [product, setProduct] = useState(null);
   const [size, setSize] = useState(null);
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     const getProduct = async () => {
@@ -116,15 +166,24 @@ const SingleProduct = () => {
   }, [productId]);
 
   const handleClick = () => {
-    setQuantity(quantity + 1);
+    setQuantity(quantity);
     dispatch(
       addProduct({
         ...product,
-        qty: quantity + 1,
-        price: product.price * (quantity + 1),
+        qty: quantity,
+        price: product.price * quantity,
         size,
       })
     );
+  };
+
+  const handleQty = (type) => {
+    if (type === "up") {
+      setQuantity(quantity + 1);
+    }
+    if (type === "down" && quantity > 1) {
+      setQuantity(quantity - 1);
+    }
   };
 
   if (!product) {
@@ -145,19 +204,37 @@ const SingleProduct = () => {
               <PriceRegular>{product.price} EUR</PriceRegular>
               <PriceDiscount>LIFAD {product.lifad} EUR</PriceDiscount>
             </PriceContainer>
-            <Button onClick={handleClick}>
-              Add to cart
-              <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
-            </Button>
+
+            {user.currentUser ? (
+              <Button onClick={handleClick}>
+                Add to cart
+                <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
+              </Button>
+            ) : (
+              <Button
+                onClick={() => alert("Please login to add products to cart")}
+              >
+                Add to cart
+                <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
+              </Button>
+            )}
+
             <Description>{product.desc}</Description>
             <FilterContainer>
               <FilterTitle>Size:</FilterTitle>
               <FilterSize onChange={(e) => setSize(e.target.value)}>
                 {product.size.map((size) => (
-                  <FilterSizeOption key={size}>{size}</FilterSizeOption>
+                  <FilterSizeOption key={size} defaultValue="S">
+                    {size}
+                  </FilterSizeOption>
                 ))}
               </FilterSize>
             </FilterContainer>
+            <AmountContainer>
+              <Add onClick={() => handleQty("up")} />
+              <Amount>{quantity}</Amount>
+              <Remove onClick={() => handleQty("down")} />
+            </AmountContainer>
           </InfoContainer>
         </Wrapper>
       </Container>

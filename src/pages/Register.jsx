@@ -18,6 +18,10 @@ const Wrapper = styled.div`
   background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
     url("https://i.scdn.co/image/ab6761610000e5eb32845b1556f9dbdfe8ee6575")
       center center no-repeat;
+
+  @media only screen and (max-width: 480px) {
+    width: 100%;
+  }
 `;
 const Title = styled.h1`
   font-family: "Bebas Neue", sans-serif;
@@ -43,12 +47,21 @@ const Input = styled.input`
   &::placeholder {
     color: rgb(0, 0, 0);
   }
+
+  @media only screen and (max-width: 480px) {
+    width: 60%;
+    font-size: 0.8em;
+  }
 `;
 const Agreement = styled.div`
   width: 40%;
   color: rgb(165, 165, 165);
   margin: 0.7em 0;
   font-size: 0.8em;
+
+  @media only screen and (max-width: 480px) {
+    width: 60%;
+  }
 `;
 const Button = styled.button`
   text-transform: uppercase;
