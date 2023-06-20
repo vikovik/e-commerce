@@ -41,35 +41,39 @@ const Products = (cat, filter, sorts) => {
   console.log(cat);
 
   useEffect(() => {
-    switch (cat.sorts) {
-      case "regular": {
-        setFilteredProducts((prev) =>
-          [...prev].sort((a) => a.preorder === false)
+    const filterProducts = () => {
+      let filtered = [...products];
+      if (cat.cat) {
+        filtered = filtered.filter((item) =>
+          Object.entries(cat.filter).every(([key, value]) =>
+            item[key].includes(value)
+          )
         );
-        break;
       }
-      case "preorder": {
-        setFilteredProducts((prev) =>
-          [...prev].sort((a) => a.preorder === true)
-        );
-        break;
+      switch (cat.sorts) {
+        case "regular": {
+          filtered.sort((a, b) => (a.preorder === false ? -1 : 1));
+          break;
+        }
+        case "preorder": {
+          filtered.sort((a, b) => (a.preorder === true ? -1 : 1));
+          break;
+        }
+        case "asc": {
+          filtered.sort((a, b) => a.price - b.price);
+          break;
+        }
+        case "desc": {
+          filtered.sort((a, b) => b.price - a.price);
+          break;
+        }
+        default:
+          break;
       }
-      case "asc": {
-        setFilteredProducts((prev) =>
-          [...prev].sort((a, b) => a.price - b.price)
-        );
-        break;
-      }
-      case "desc": {
-        setFilteredProducts((prev) =>
-          [...prev].sort((a, b) => b.price - a.price)
-        );
-        break;
-      }
-      default:
-        break;
-    }
-  }, [cat.sorts]);
+      setFilteredProducts(filtered);
+    };
+    filterProducts();
+  }, [products, cat.cat, cat.filter, cat.sorts]);
 
   return (
     <Container>
