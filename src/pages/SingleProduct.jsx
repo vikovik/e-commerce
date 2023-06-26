@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { ShoppingCartOutlined } from "@mui/icons-material";
+import { ShoppingCartOutlined, FavoriteBorder } from "@mui/icons-material";
 import { Add, Remove } from "@mui/icons-material";
 import { useLocation } from "react-router-dom";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
+import { addProductList } from "../redux/wishlistRedux";
 import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div`
@@ -84,6 +85,8 @@ const PriceRegular = styled.span`
   letter-spacing: 0.05em;
 `;
 const PriceDiscount = styled.span`
+  align-items: center;
+  display: flex;
   border: 1px solid rgb(0, 163, 0);
   border-radius: 10px;
   width: fit-content;
@@ -145,6 +148,25 @@ const Amount = styled.span`
   border: 1px solid rgb(153, 152, 152);
   border-radius: 5px;
 `;
+const ButtonWrapper = styled.div`
+  display: flex;
+`;
+const Wishlist = styled.button`
+  align-items: center;
+  display: flex;
+  padding: 0.5em 1em;
+  background: transparent;
+  border: 1px solid rgb(197, 197, 197);
+  border-radius: 5px;
+  margin-left: 1em;
+  font-size: 1.2em;
+  color: rgb(197, 197, 197);
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(163, 162, 162, 0.3);
+  }
+`;
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -172,6 +194,17 @@ const SingleProduct = () => {
         ...product,
         qty: quantity,
         price: product.price * quantity,
+        size,
+      })
+    );
+  };
+
+  const handleWishlist = () => {
+    setQuantity(quantity);
+    dispatch(
+      addProductList({
+        ...product,
+        qty: quantity,
         size,
       })
     );
@@ -206,17 +239,33 @@ const SingleProduct = () => {
             </PriceContainer>
 
             {user.currentUser ? (
-              <Button onClick={handleClick}>
-                Add to cart
-                <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
-              </Button>
+              <ButtonWrapper>
+                <Button onClick={handleClick}>
+                  Add to cart
+                  <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
+                </Button>
+                <Wishlist onClick={handleWishlist}>
+                  Add to wishlist
+                  <FavoriteBorder style={{ marginLeft: ".3em" }} />
+                </Wishlist>
+              </ButtonWrapper>
             ) : (
-              <Button
-                onClick={() => alert("Please login to add products to cart")}
-              >
-                Add to cart
-                <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
-              </Button>
+              <ButtonWrapper>
+                <Button
+                  onClick={() => alert("Please login to add products to cart")}
+                >
+                  Add to cart
+                  <ShoppingCartOutlined style={{ marginLeft: ".5em" }} />
+                </Button>
+                <Wishlist
+                  onClick={() =>
+                    alert("Please login to add products to wishlist")
+                  }
+                >
+                  Add to wishlist
+                  <FavoriteBorder style={{ marginLeft: ".3em" }} />
+                </Wishlist>
+              </ButtonWrapper>
             )}
 
             <Description>{product.desc}</Description>

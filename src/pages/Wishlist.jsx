@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
-import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearCart, removeFromCart } from "../redux/cartRedux";
+import { clearWishlist, removeFromList } from "../redux/wishlistRedux";
+import { addProduct } from "../redux/cartRedux";
 
 const Container = styled.div`
   background: rgb(0, 0, 0);
@@ -39,21 +40,6 @@ const Top = styled.div`
     font-size: 0.8em;
   }
 `;
-const Bottom = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-const Info = styled.div`
-  flex: 2;
-`;
-const Summary = styled.div`
-  flex: 1;
-  background: rgba(71, 71, 71, 0.3);
-  height: fit-content;
-  padding: 1em;
-  margin: 1em 0;
-  border-radius: 10px;
-`;
 const TopButton = styled.button`
   text-transform: uppercase;
   font-size: 1em;
@@ -86,7 +72,7 @@ const TextWrapper = styled.div`
     display: none;
   }
 `;
-const Text = styled.span`
+const Text = styled.p`
   margin-right: 1em;
   font-size: 1.2em;
   color: rgb(168, 168, 168);
@@ -96,6 +82,13 @@ const Text = styled.span`
   &:hover {
     color: rgb(211, 211, 211);
   }
+`;
+const Bottom = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+const Info = styled.div`
+  flex: 1;
 `;
 const Product = styled.div`
   display: flex;
@@ -107,7 +100,7 @@ const Product = styled.div`
   }
 `;
 const ProductDetail = styled.div`
-  flex: 3;
+  flex: 1;
   display: flex;
   padding: 1em 0;
 
@@ -179,61 +172,6 @@ const ProductPrice = styled.span`
   color: rgb(117, 117, 117);
   margin-top: 1em;
 `;
-const SummaryTitle = styled.h1`
-  text-transform: uppercase;
-  margin-bottom: 1em;
-  text-align: center;
-
-  @media only screen and (max-width: 480px) {
-    font-size: 1em;
-  }
-`;
-const SummaryItem = styled.div`
-  margin: 1em 0;
-  display: flex;
-  justify-content: space-between;
-  font-weight: ${(props) => props.type === "total" && "600"};
-  font-size: ${(props) => props.type === "total" && "1.3em"};
-  border-top: ${(props) =>
-    props.type === "total" && "1px dotted rgb(180, 180, 180)"};
-  padding-top: ${(props) => props.type === "total" && "1em"};
-
-  @media only screen and (max-width: 480px) {
-    font-size: 0.8em;
-    margin: 0.4em 0em;
-    flex-direction: column;
-  }
-`;
-const SummaryItemText = styled.span`
-  @media only screen and (max-width: 480px) {
-    font-size: 0.8em;
-  }
-`;
-const SummaryItemPrice = styled.span`
-  @media only screen and (max-width: 480px) {
-    font-size: 0.8em;
-    font-weight: bold;
-  }
-`;
-const Button = styled.button`
-  text-transform: uppercase;
-  font-size: 1em;
-  font-weight: 600;
-  padding: 0.5em 1em;
-  border: 1px solid rgb(0, 163, 0);
-  color: rgb(0, 163, 0);
-  border-radius: 5px;
-  width: 100%;
-  background: transparent;
-
-  &:hover {
-    background: rgba(0, 163, 0, 0.3);
-  }
-
-  @media only screen and (max-width: 480px) {
-    font-size: 0.5em;
-  }
-`;
 const ProductQty = styled.span`
   font-size: 1.2em;
   margin: 1em 0;
@@ -279,29 +217,51 @@ const ClickMessage = styled.h3`
     color: rgb(211, 211, 211);
   }
 `;
+const Addbutton = styled.button`
+  margin-top: 1em;
+  text-transform: uppercase;
+  font-size: 1em;
+  padding: 0.5em 1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background: transparent;
+  color: rgb(2, 194, 2);
+  border: 1px solid rgb(0, 163, 0);
 
-const Cart = () => {
+  &:hover {
+    background: rgba(0, 163, 0, 0.3);
+  }
+
+  @media only screen and (max-width: 480px) {
+    font-size: 0.7em;
+    width: 40%;
+  }
+`;
+
+const Wishlist = () => {
   const cart = useSelector((state) => state.cart);
   const list = useSelector((state) => state.list);
-  const back = useNavigate();
   const dispatch = useDispatch();
-  const toWishlist = useNavigate();
+  const back = useNavigate();
+  const toCart = useNavigate();
 
-  let shippingPrice = 10;
-  let lifadDiscount = 0;
-  let hstPercentage = 0.13;
-
-  const handleClearCart = () => {
-    dispatch(clearCart());
+  const handleClearList = () => {
+    dispatch(clearWishlist());
   };
 
   const handleDeleteItem = (id) => {
-    dispatch(removeFromCart(id));
+    dispatch(removeFromList(id));
+  };
+
+  const handleAddToCart = (product) => {
+    dispatch(addProduct(product));
+    dispatch(removeFromList(product._id));
   };
 
   const uniqueProducts = useMemo(() => {
     const prodMap = {};
-    cart.products.forEach((prod) => {
+    list.products.forEach((prod) => {
       const { _id, qty } = prod;
       if (!prodMap[_id] || qty >= prodMap[_id].qty) {
         prodMap[_id] = prod;
@@ -309,27 +269,14 @@ const Cart = () => {
     });
     const uniqueProducts = Object.values(prodMap);
     return uniqueProducts;
-  }, [cart.products]);
-
-  const subtotalPrice = useMemo(() => {
-    return uniqueProducts.reduce((subtotal, product) => {
-      const highestQtyProduct = cart.products.find(
-        (p) => p._id === product._id
-      );
-      return subtotal + product.price;
-    }, 0);
-  }, [cart.products, uniqueProducts]);
-
-  const totalPrice = useMemo(() => {
-    return subtotalPrice * (1 + hstPercentage) + shippingPrice - lifadDiscount;
-  }, [subtotalPrice]);
+  }, [list.products]);
 
   return (
     <>
       <Navbar />
       <Container>
         <Wrapper>
-          <Title>Your cart</Title>
+          <Title>Your Wishlist</Title>
           <Top>
             <TopButton
               onClick={() => {
@@ -339,16 +286,20 @@ const Cart = () => {
               Continue shopping
             </TopButton>
             <TextWrapper>
-              <Text>Shopping Bag ({cart.qty})</Text>
-              <Text onClick={() => toWishlist("/wishlist")}>
-                Your Wishlist ({list.qty})
+              <Text
+                onClick={() => {
+                  toCart("/cart");
+                }}
+              >
+                Shopping Bag ({cart.qty})
               </Text>
+              <Text>Your Wishlist ({list.qty})</Text>
             </TextWrapper>
-            <TopButton onClick={handleClearCart}>Clear Cart</TopButton>
+            <TopButton onClick={handleClearList}>Clear Wishlist</TopButton>
           </Top>
-          {cart.products.length === 0 ? (
+          {list.products.length === 0 ? (
             <>
-              <Message> You have no products in your cart</Message>
+              <Message> You have no products in your wishlist</Message>
               <ClickMessage
                 onClick={() => {
                   back("/");
@@ -376,6 +327,9 @@ const Cart = () => {
                           <ProductQty>
                             <b>Quantity:</b> {product.qty}
                           </ProductQty>
+                          <Addbutton onClick={() => handleAddToCart(product)}>
+                            Add to cart
+                          </Addbutton>
                           <DeleteButton
                             onClick={() => handleDeleteItem(product._id)}
                           >
@@ -390,32 +344,6 @@ const Cart = () => {
                   );
                 })}
               </Info>
-              <Summary>
-                <SummaryTitle>Order Summary</SummaryTitle>
-                <SummaryItem>
-                  <SummaryItemText>Subtotal:</SummaryItemText>
-                  <SummaryItemPrice>{subtotalPrice} EUR</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem>
-                  <SummaryItemText>Shipping:</SummaryItemText>
-                  <SummaryItemPrice>{shippingPrice} EUR</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem>
-                  <SummaryItemText>LIFAD Discount:</SummaryItemText>
-                  <SummaryItemPrice>-{lifadDiscount} EUR</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem>
-                  <SummaryItemText>HST:</SummaryItemText>
-                  <SummaryItemPrice>{hstPercentage * 100} %</SummaryItemPrice>
-                </SummaryItem>
-                <SummaryItem type="total">
-                  <SummaryItemText>Total:</SummaryItemText>
-                  <SummaryItemPrice>
-                    {totalPrice.toFixed(2)} EUR
-                  </SummaryItemPrice>
-                </SummaryItem>
-                <Button>Checkout Now</Button>
-              </Summary>
             </Bottom>
           )}
         </Wrapper>
@@ -425,4 +353,4 @@ const Cart = () => {
   );
 };
 
-export default Cart;
+export default Wishlist;
