@@ -19,7 +19,7 @@ const Products = (cat, filter, sorts) => {
     const getProducts = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/products?categoryId=${cat.cat}`
+          `https://wild-jade-sheep-hem.cyclic.app/api/products?categoryId=${cat.cat}`
         );
         setProducts(res.data);
       } catch (err) {}
@@ -37,8 +37,6 @@ const Products = (cat, filter, sorts) => {
         )
       );
   }, [products, cat, filter]);
-
-  console.log(cat);
 
   useEffect(() => {
     const filterProducts = () => {
@@ -75,10 +73,14 @@ const Products = (cat, filter, sorts) => {
     filterProducts();
   }, [products, cat.cat, cat.filter, cat.sorts]);
 
+  if (!products) {
+    return <div style={{ marginTop: "4em" }}>Loading...</div>;
+  }
+
   return (
     <Container>
       {filteredProducts.map((product) => (
-        <Product key={product.id} product={product} />
+        <Product key={product._id} product={product} />
       ))}
     </Container>
   );

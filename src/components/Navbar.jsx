@@ -1,11 +1,15 @@
 import React from "react";
 import styled from "styled-components";
-import { ShoppingCartOutlined } from "@mui/icons-material";
+import {
+  FavoriteBorderOutlined,
+  ShoppingCartOutlined,
+} from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { logout } from "../redux/userRedux";
 import { clearCart } from "../redux/cartRedux";
+import { clearWishlist } from "../redux/wishlistRedux";
 
 const Container = styled.div`
   height: 4em;
@@ -59,13 +63,17 @@ const Menu = styled.div`
 const Navbar = () => {
   const cart = useSelector((state) => state.cart);
   const user = useSelector((state) => state.user);
+  const list = useSelector((state) => state.list);
   const login = useNavigate();
   const register = useNavigate();
   const home = useNavigate();
+  const cartPage = useNavigate();
+  const listPage = useNavigate();
   const dispatch = useDispatch();
   const handleLogout = () => {
     dispatch(logout());
     dispatch(clearCart());
+    dispatch(clearWishlist());
   };
 
   return (
@@ -104,13 +112,22 @@ const Navbar = () => {
               </Menu>
             </>
           )}
-          <Link to="/cart">
-            <Menu>
-              <Badge badgeContent={cart.qty} color="primary">
-                <ShoppingCartOutlined />
-              </Badge>
-            </Menu>
-          </Link>
+
+          <Menu>
+            <Badge badgeContent={cart.qty} color="primary">
+              <ShoppingCartOutlined
+                onClick={() => {
+                  cartPage("/cart");
+                }}
+              />
+            </Badge>
+            <Badge badgeContent={list.qty} color="primary">
+              <FavoriteBorderOutlined
+                style={{ marginLeft: ".3em" }}
+                onClick={() => listPage("/wishlist")}
+              />
+            </Badge>
+          </Menu>
         </Right>
       </Wrapper>
     </Container>
