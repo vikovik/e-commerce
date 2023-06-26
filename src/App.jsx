@@ -6,6 +6,7 @@ import SingleProduct from "./pages/SingleProduct";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Cart from "./pages/Cart";
+import Wishlist from "./pages/Wishlist";
 import { useSelector } from "react-redux";
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/cart" element={<Cart />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/wishlist" element={<Wishlist />} />
       </Routes>
     </Router>
   );
