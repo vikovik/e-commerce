@@ -3,7 +3,8 @@ import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Products from "../components/Products";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ArrowBack } from "@mui/icons-material";
 
 const Container = styled.div`
   background: rgb(0, 0, 0);
@@ -60,12 +61,31 @@ const Option = styled.option`
   color: rgb(219, 218, 218);
 `;
 
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+const BackButton = styled.button`
+  margin-right: 1em;
+  cursor: pointer;
+  border: 1px solid rgb(219, 218, 218);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5em;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
+
 const ProductsPage = () => {
   const location = useLocation();
   const categoryId = location.pathname.split("/")[3];
   const category = location.pathname.split("/")[2];
   const [filters, setFilters] = useState({});
   const [sort, setSort] = useState("regular");
+  const history = useNavigate();
 
   const handleFilters = (e) => {
     const val = e.target.value;
@@ -78,7 +98,12 @@ const ProductsPage = () => {
     <>
       <Navbar />
       <Container>
-        <Title>{category}</Title>
+        <Wrapper>
+          <BackButton onClick={() => history(-1)}>
+            <ArrowBack />
+          </BackButton>
+          <Title>{category}</Title>
+        </Wrapper>
         <FilterContainer>
           <Filter>
             <FilterText>

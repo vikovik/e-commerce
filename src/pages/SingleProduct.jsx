@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { ShoppingCartOutlined, FavoriteBorder } from "@mui/icons-material";
+import {
+  ShoppingCartOutlined,
+  FavoriteBorder,
+  ArrowBack,
+} from "@mui/icons-material";
 import { Add, Remove } from "@mui/icons-material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { publicRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 import { addProductList } from "../redux/wishlistRedux";
@@ -167,6 +171,23 @@ const Wishlist = styled.button`
     background: rgba(163, 162, 162, 0.3);
   }
 `;
+const BackButton = styled.button`
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  font-size: 1.2em;
+  margin: 1em 0;
+  cursor: pointer;
+  border: 1px solid rgb(219, 218, 218);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  padding: 0.5em;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+`;
 
 const SingleProduct = () => {
   const location = useLocation();
@@ -175,6 +196,7 @@ const SingleProduct = () => {
   const [size, setSize] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const dispatch = useDispatch();
+  const history = useNavigate();
   const user = useSelector((state) => state.user);
 
   useEffect(() => {
@@ -227,6 +249,10 @@ const SingleProduct = () => {
     <>
       <Navbar />
       <Container>
+        <BackButton onClick={() => history(-1)}>
+          <ArrowBack />
+          Go Back
+        </BackButton>
         <Wrapper>
           <ImageContainer>
             <Image src={product.img} />
