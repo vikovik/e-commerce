@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { login } from "../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userRedux";
 
 const Container = styled.div`
   height: 100vh;
@@ -102,10 +103,24 @@ const Login = () => {
   const { isFetching, error } = useSelector((state) => state.user);
   const nav = useNavigate();
 
-  const handleClick = (e) => {
+  const handleClick = async (e) => {
     e.preventDefault();
-    login(dispatch, { email, password });
-    nav("/");
+    dispatch(loginStart());
+
+    try {
+      const response = await login(dispatch, { email, password });
+      if (response !== null) {
+        nav("/");
+      } else {
+        dispatch(loginFailure());
+        window.alert(
+          "Invalid credentials. Please try again or create new account."
+        );
+      }
+    } catch (error) {
+      console.error(error);
+      window.alert("An error occurred. Please try again.");
+    }
   };
 
   const history = useNavigate();
